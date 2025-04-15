@@ -122,8 +122,15 @@ async function mdToHtml(options) {
       const $ = cheerio.load(result);
 
       $('img').each((_i, img) => {
+        let _filePath = filePath;
+        if (_filePath.indexOf('/') !== -1) {
+          _filePath = _filePath.substring(_filePath.lastIndexOf('/') + 1);
+        } else {
+          _filePath = '';
+        }
+        let imgPath = decodeURIComponent($(img).attr('src'));
         const imgSrc = path
-          .resolve(rootPath, decodeURIComponent($(img).attr('src')))
+          .resolve(rootPath, _filePath, imgPath)
           // Fix the problem of multi-layer nesting of paths caused by direct introduction of <img> tags in the document.
           .replace('docs/docs/assets', 'docs/assets');
 
